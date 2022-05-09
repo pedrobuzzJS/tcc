@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  codigo          Int @id @default(autoincrement())
+  nome            String @db.VarChar(100)
+  login           String @db.VarChar(100)
+  email           String @db.VarChar(255)
+  senha           String @db.VarChar(255)
+  confirmasenha   Boolean 
+  confirmaemail   Boolean @default(false)
+  alterarsenha    Boolean @default(false)
+  usuarioPermissao  UsuarioPermissao[]
+  usuarioRotina UsuarioRotina[]
+
+  @@map("tbusuario")
+}
+
+model Rotina {
+  codigo      Int @id @default(autoincrement())
+  descricao   String @db.VarChar(100)
+  created_at  DateTime @default(now())
+  usuarioRotina UsuarioRotina[]
+  rotinaPermissao RotinaPermissao[]
+
+  @@map("tbrotina")
+}
+
+model Permissao {
+  codigo      Int @id @default(autoincrement())
+  nome        String @db.VarChar(50)
+  descricao   String @db.VarChar(255)
+  usuarioPermissao  UsuarioPermissao[]
+  rotinaPermissao RotinaPermissao[]
+
+  @@map("tbpermissao")
+}
+
+model UsuarioPermissao {
+  usuario Int
+  usuarioCod Usuario @relation(fields: [usuario], references: [codigo])
+  permissao Int
+  permissaoCod Permissao @relation(fields: [permissao], references: [codigo])
+
+  @@id([usuario, permissao])
+  @@map("tbusuariopermissao")
+}
+
+model UsuarioRotina {
+  rotina  Int
+  rotinaCod Rotina @relation(fields: [rotina], references: [codigo])
+  usuario Int
+  usuarioCod Usuario @relation(fields: [usuario], references: [codigo])
+
+  @@id([rotina, usuario])
+  @@map("tbusuariorotina")
+}
+
+model RotinaPermissao {
+  rotina  Int
+  rotinaCod  Rotina @relation(fields: [rotina], references: [codigo])
+  permissao Int
+  permissaoCod Permissao @relation(fields: [permissao], references: [codigo])
+
+  @@id([rotina, permissao])
+  @@map("tbrotinapermissao")
+}
