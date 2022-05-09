@@ -11,65 +11,65 @@ datasource db {
 }
 
 model Usuario {
-  codigo          Int @id @default(autoincrement())
-  nome            String @db.VarChar(100)
-  login           String @db.VarChar(100)
-  email           String @db.VarChar(255)
-  senha           String @db.VarChar(255)
-  confirmasenha   Boolean 
-  confirmaemail   Boolean @default(false)
-  alterarsenha    Boolean @default(false)
+  codigo            Int @id @default(autoincrement())
+  nome              String @db.VarChar(100)
+  login             String @db.VarChar(100)
+  email             String @db.VarChar(255)
+  senha             String @db.VarChar(255)
+  confirmasenha     Boolean 
+  confirmaemail     Boolean @default(false)
+  alterarsenha      Boolean @default(false)
   usuarioPermissao  UsuarioPermissao[]
-  usuarioGrupo UsuarioGrupo[]
+  usuarioGrupo      UsuarioGrupo[]
 
   @@map("tbusuario")
 }
 
 model Grupo {
-  codigo      Int @id @default(autoincrement())
-  descricao   String @db.VarChar(100)
-  created_at  DateTime @default(now())
-  usuarioGrupo UsuarioGrupo[]
-  grupoPermissao GrupoPermissao[]
+  codigo          Int @id @default(autoincrement())
+  descricao       String @db.VarChar(100)
+  created_at      DateTime @default(now())
+  usuarioGrupo    UsuarioGrupo[]
+  grupoPermissao  GrupoPermissao[]
 
   @@map("tbgrupo")
 }
 
 model Permissao {
-  codigo      Int @id @default(autoincrement())
-  nome        String @db.VarChar(50)
-  descricao   String @db.VarChar(255)
+  codigo            Int @id @default(autoincrement())
+  nome              String @db.VarChar(50)
+  descricao         String @db.VarChar(255)
   usuarioPermissao  UsuarioPermissao[]
-  grupoPermissao GrupoPermissao[]
+  grupoPermissao    GrupoPermissao[]
 
   @@map("tbpermissao")
 }
 
 model UsuarioPermissao {
-  usuario Int
-  usuarioCod Usuario @relation(fields: [usuario], references: [codigo])
-  permissao Int
-  permissaoCod Permissao @relation(fields: [permissao], references: [codigo])
+  usuario       Int
+  usuarioCod    Usuario @relation(fields: [usuario], references: [codigo])
+  permissao     Int
+  permissaoCod  Permissao @relation(fields: [permissao], references: [codigo])
 
   @@id([usuario, permissao])
   @@map("tbusuariopermissao")
 }
 
 model UsuarioGrupo {
-  grupo  Int
-  grupoCod Grupo @relation(fields: [grupo], references: [codigo])
-  usuario Int
-  usuarioCod Usuario @relation(fields: [usuario], references: [codigo])
+  grupo       Int
+  grupoCod    Grupo @relation(fields: [grupo], references: [codigo])
+  usuario     Int
+  usuarioCod  Usuario @relation(fields: [usuario], references: [codigo])
 
   @@id([grupo, usuario])
   @@map("tbusuariogrupo")
 }
 
 model GrupoPermissao {
-  grupo  Int
-  grupoCod  Grupo @relation(fields: [grupo], references: [codigo])
-  permissao Int
-  permissaoCod Permissao @relation(fields: [permissao], references: [codigo])
+  grupo         Int
+  grupoCod      Grupo @relation(fields: [grupo], references: [codigo])
+  permissao     Int
+  permissaoCod  Permissao @relation(fields: [permissao], references: [codigo])
 
   @@id([grupo, permissao])
   @@map("tbgrupopermissao")
@@ -135,19 +135,19 @@ model TipoLogradouro {
 }
 
 model Cep {
-  codigo          Int @id @default(autoincrement())
-  nome            String @db.VarChar(255)
-  tipologradouro  Int
-  tipologradouroCod  TipoLogradouro @relation(fields: [tipologradouro], references: [codigo])
-  pais            Int
-  paisCod         Pais @relation(fields: [pais], references: [codigo])
-  estado          Int
-  estadoCod       Endereco @relation(fields: [estado], references: [codigo])
-  cidade          Int
-  cidadeCod       Cidade @relation(fields: [cidade], references: [codigo])
-  bairro          Int
-  bairroCod       Bairro @relation(fields: [bairro], references: [codigo])
-  cep             String @db.VarChar(9)
+  codigo              Int @id @default(autoincrement())
+  nome                String @db.VarChar(255)
+  tipologradouro      Int
+  tipologradouroCod   TipoLogradouro @relation(fields: [tipologradouro], references: [codigo])
+  pais                Int
+  paisCod             Pais @relation(fields: [pais], references: [codigo])
+  estado              Int
+  estadoCod           Endereco @relation(fields: [estado], references: [codigo])
+  cidade              Int
+  cidadeCod           Cidade @relation(fields: [cidade], references: [codigo])
+  bairro              Int
+  bairroCod           Bairro @relation(fields: [bairro], references: [codigo])
+  cep                 String @db.VarChar(9)
 
   @@map("tbcep")
 }
