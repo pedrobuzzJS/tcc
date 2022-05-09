@@ -20,19 +20,19 @@ model Usuario {
   confirmaemail   Boolean @default(false)
   alterarsenha    Boolean @default(false)
   usuarioPermissao  UsuarioPermissao[]
-  usuarioRotina UsuarioRotina[]
+  usuarioGrupo UsuarioGrupo[]
 
   @@map("tbusuario")
 }
 
-model Rotina {
+model Grupo {
   codigo      Int @id @default(autoincrement())
   descricao   String @db.VarChar(100)
   created_at  DateTime @default(now())
-  usuarioRotina UsuarioRotina[]
-  rotinaPermissao RotinaPermissao[]
+  usuarioGrupo UsuarioGrupo[]
+  grupoPermissao GrupoPermissao[]
 
-  @@map("tbrotina")
+  @@map("tbgrupo")
 }
 
 model Permissao {
@@ -40,7 +40,7 @@ model Permissao {
   nome        String @db.VarChar(50)
   descricao   String @db.VarChar(255)
   usuarioPermissao  UsuarioPermissao[]
-  rotinaPermissao RotinaPermissao[]
+  grupoPermissao GrupoPermissao[]
 
   @@map("tbpermissao")
 }
@@ -55,22 +55,112 @@ model UsuarioPermissao {
   @@map("tbusuariopermissao")
 }
 
-model UsuarioRotina {
-  rotina  Int
-  rotinaCod Rotina @relation(fields: [rotina], references: [codigo])
+model UsuarioGrupo {
+  grupo  Int
+  grupoCod Grupo @relation(fields: [grupo], references: [codigo])
   usuario Int
   usuarioCod Usuario @relation(fields: [usuario], references: [codigo])
 
-  @@id([rotina, usuario])
-  @@map("tbusuariorotina")
+  @@id([grupo, usuario])
+  @@map("tbusuariogrupo")
 }
 
-model RotinaPermissao {
-  rotina  Int
-  rotinaCod  Rotina @relation(fields: [rotina], references: [codigo])
+model GrupoPermissao {
+  grupo  Int
+  grupoCod  Grupo @relation(fields: [grupo], references: [codigo])
   permissao Int
   permissaoCod Permissao @relation(fields: [permissao], references: [codigo])
 
-  @@id([rotina, permissao])
-  @@map("tbrotinapermissao")
+  @@id([grupo, permissao])
+  @@map("tbgrupopermissao")
+}
+
+// Migrations de Endereços
+
+model Pais {
+  codigo  Int @id @default(autoincrement())
+  nome    String @db.VarChar(100)
+  sigla   String @db.VarChar(3)
+  ddi     String @db.VarChar(3)
+  estado  Estado[]
+  cidade  Cidade[]
+  cep     Cep[]
+
+  @@map("tbpais")
+}
+
+model Estado {
+  codigo  Int @id @default(autoincrement())
+  nome    String @db.VarChar(100)
+  pais    Int
+  sigla   String @db.VarChar(3)
+  ibge    String @db.VarChar(5)
+  paisCod Pais @relation(fields: [pais], references: [codigo])
+  cidades Cidade[]
+
+  @@map("tbestado")
+}
+
+model Cidade {
+  codigo    Int @id @default(autoincrement())
+  nome      String @db.VarChar(100)
+  pais      Int
+  estado    Int
+  ibge      String @db.VarChar(10)
+  paisCod   Pais @relation(fields: [pais], references: [codigo])
+  estadoCod Estado @relation(fields: [estado], references: [codigo])
+  bairro    Bairro[]
+  cep       Cep[]
+
+  @@map("tbcidade")
+}
+
+model Bairro {
+  codigo      Int @id @default(autoincrement())
+  nome        String @db.VarChar(150)
+  cidade      Int
+  cidadeCod   Cidade @relation(fields: [cidade], references: [codigo])
+  cep         Cep[]
+
+  @@map("tbbairro")
+}
+
+model TipoLogradouro {
+  codigo  Int @id @default(autoincrement())
+  sigla   String @db.VarChar(10)
+  nome    String @db.VarChar(50)
+  cep     Cep[]
+
+  @@map("tbtipologradouro")
+}
+
+model Cep {
+  codigo          Int @id @default(autoincrement())
+  nome            String @db.VarChar(255)
+  tipologradouro  Int
+  tipologradouroCod  TipoLogradouro @relation(fields: [tipologradouro], references: [codigo])
+  pais            Int
+  paisCod         Pais @relation(fields: [pais], references: [codigo])
+  estado          Int
+  estadoCod       Endereco @relation(fields: [estado], references: [codigo])
+  cidade          Int
+  cidadeCod       Cidade @relation(fields: [cidade], references: [codigo])
+  bairro          Int
+  bairroCod       Bairro @relation(fields: [bairro], references: [codigo])
+  cep             String @db.VarChar(9)
+
+  @@map("tbcep")
+}
+
+model Endereco {
+  codigo        Int @id @default(autoincrement())
+  numero        Int
+  descricao     String @db.VarChar(255)
+  complemento   String @db.VarChar(255)
+  residencial   Boolean @default(false)
+  comercial     Boolean @default(false)
+  fiscal        Boolean @default(false)
+  cep           Cep[]
+
+  @@map("tbendereco")
 }
