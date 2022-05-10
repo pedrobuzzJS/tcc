@@ -1,8 +1,11 @@
 import React from 'react';
-// import './App.css';
+import './App.css';
+import { MenuLateral } from './components/layout/menuLateral/style';
 
 function App() {
-  return (<h1>Hello World</h1>);
+  return (
+    <MenuLateral />
+  );
 }
 
 export default App;
